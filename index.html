@@ -16,8 +16,14 @@
   --accent: #d7e2cb;
 }
 * { box-sizing: border-box; }
-body {
+html, body {
   margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+body {
   background: var(--bg);
   color: var(--ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -28,58 +34,60 @@ button:focus-visible, input:focus-visible {
   outline-offset: 3px;
 }
 .app {
+  width: 100%;
   max-width: 540px;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   margin: auto;
-  padding: max(18px, env(safe-area-inset-top)) 18px
-    max(20px, env(safe-area-inset-bottom));
+  padding: max(12px, env(safe-area-inset-top)) 16px
+    max(12px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
+  overflow: hidden;
 }
 header, .row, .footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-header { min-height: 44px; }
-.brand { display: flex; align-items: center; gap: 11px; }
+.app > header { flex: 0 0 auto; min-height: 40px; }
+.brand { display: flex; align-items: center; gap: 10px; }
 .logo {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: var(--accent);
   color: #171b15;
-  font-size: 24px;
+  font-size: 23px;
 }
-h1 { margin: 0; font-size: 17px; letter-spacing: 3px; }
+h1 { margin: 0; font-size: 16px; letter-spacing: 3px; }
 .subtitle {
-  margin-top: 4px;
+  margin-top: 3px;
   font-size: 9px;
-  letter-spacing: 2px;
+  letter-spacing: 1.8px;
   color: var(--muted);
 }
 .status {
   border: 1px solid #34372f;
-  padding: 7px 10px;
+  padding: 7px 9px;
   border-radius: 30px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: 1px;
 }
 .viewfinder {
   position: relative;
+  flex: 1 1 0;
+  min-height: 0;
   width: 100%;
-  aspect-ratio: 3 / 4;
-  max-height: 56dvh;
-  min-height: 280px;
   overflow: hidden;
   background: #20231e;
   border-radius: 15px;
 }
-canvas {
+#preview {
   display: block;
   width: 100%;
   height: 100%;
@@ -90,21 +98,20 @@ canvas {
   position: absolute;
   inset: 12%;
   pointer-events: none;
-  opacity: .25;
+  opacity: .22;
   background:
     linear-gradient(90deg, transparent 33.1%, #fff 33.3%, transparent 33.6%, transparent 66.4%, #fff 66.6%, transparent 66.9%),
     linear-gradient(0deg, transparent 33.1%, #fff 33.3%, transparent 33.6%, transparent 66.4%, #fff 66.6%, transparent 66.9%);
 }
 .finder-top {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
+  top: 14px;
+  left: 14px;
+  right: 14px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   font-size: 10px;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.4px;
   text-shadow: 0 1px 6px #000;
   pointer-events: none;
 }
@@ -118,7 +125,7 @@ canvas {
   flex-direction: column;
   gap: 12px;
   text-align: center;
-  padding: 28px;
+  padding: 24px;
   background: #20231e;
 }
 .message p {
@@ -136,60 +143,64 @@ canvas {
   font-weight: 650;
   font-size: 12px;
 }
+.filter-bar { flex: 0 0 auto; }
+.current-look {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #34372f;
+  border-radius: 11px;
+  background: #20221e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+.current-look .look-meta { display: grid; gap: 4px; }
+.current-look small {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+.current-look strong {
+  font-size: 13px;
+  letter-spacing: 1.5px;
+}
+.chevron { color: var(--accent); font-size: 22px; }
 .section-label {
   color: var(--muted);
   font-size: 10px;
-  letter-spacing: 1.8px;
+  letter-spacing: 1.5px;
 }
-.look-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 12px;
-}
-.look {
-  min-width: 0;
-  border: 1px solid #30332d;
-  background: var(--panel);
-  padding: 12px 4px;
-  border-radius: 10px;
-  font-size: 10px;
-  letter-spacing: .8px;
-  color: #c6c9bf;
-}
-.look.active {
-  background: #303a30;
-  border-color: #84947b;
-  color: #f4f4eb;
-}
-.look small {
-  display: block;
-  margin-top: 5px;
-  font-size: 9px;
-  letter-spacing: 0;
-  color: var(--muted);
-}
-.intensity { margin-top: 19px; }
-.intensity .row { margin-bottom: 10px; }
+.intensity { margin-top: 11px; }
+.intensity .row { margin-bottom: 7px; }
 output { font-size: 12px; color: var(--accent); }
 input[type=range] {
+  display: block;
   width: 100%;
+  margin: 0;
   accent-color: var(--accent);
 }
-.footer { gap: 12px; margin-top: auto; padding-top: 4px; }
+.footer {
+  flex: 0 0 auto;
+  gap: 12px;
+  padding: 2px 0;
+}
 .tool {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   flex-shrink: 0;
   border-radius: 50%;
   border: 1px solid #363930;
   background: var(--panel);
   font-size: 19px;
 }
-.tool:disabled, .shutter:disabled { opacity: .4; cursor: default; }
+.tool:disabled, .shutter:disabled {
+  opacity: .4;
+  cursor: default;
+}
 .shutter {
-  width: 70px;
-  height: 70px;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   padding: 5px;
   background: transparent;
@@ -208,18 +219,117 @@ input[type=range] {
   font-size: 9px;
   text-align: center;
   letter-spacing: 1px;
+  margin-top: 6px;
 }
 #notice {
-  font-size: 12px;
+  flex: 0 0 auto;
+  font-size: 11px;
   color: var(--accent);
   text-align: center;
   overflow-wrap: anywhere;
 }
-@media (max-height: 700px) {
-  .app { gap: 12px; }
-  .viewfinder { min-height: 220px; max-height: 43dvh; }
-  .look { padding: 9px 3px; }
-  .intensity { margin-top: 12px; }
+
+/* Filter drawer */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgb(0 0 0 / 65%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .22s, visibility .22s;
+}
+.filter-drawer {
+  position: fixed;
+  z-index: 21;
+  bottom: 0;
+  left: 50%;
+  width: min(100%, 540px);
+  max-height: min(76dvh, 620px);
+  padding: 10px 16px max(20px, env(safe-area-inset-bottom));
+  background: #1b1d19;
+  border: 1px solid #383b32;
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  transform: translate(-50%, 105%);
+  transition: transform .25s ease;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  visibility: hidden;
+}
+body.drawer-open .drawer-backdrop {
+  opacity: 1;
+  visibility: visible;
+}
+body.drawer-open .filter-drawer {
+  transform: translate(-50%, 0);
+  visibility: visible;
+}
+.drawer-handle {
+  width: 38px;
+  height: 4px;
+  margin: 0 auto 18px;
+  border-radius: 8px;
+  background: #55584f;
+}
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.drawer-header h2 { font-size: 18px; margin: 0; }
+.drawer-header p {
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1.2px;
+  margin: 6px 0 0;
+}
+.close-drawer {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #393c34;
+  background: #292b25;
+}
+.drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+.look {
+  min-width: 0;
+  min-height: 62px;
+  border: 1px solid #30332d;
+  background: var(--panel);
+  padding: 10px 3px;
+  border-radius: 10px;
+  font-size: 10px;
+  letter-spacing: .7px;
+  color: #c6c9bf;
+}
+.look.active {
+  background: #303a30;
+  border-color: #84947b;
+  color: #f4f4eb;
+}
+.look small {
+  display: block;
+  margin-top: 5px;
+  font-size: 9px;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+@media (max-height: 650px) {
+  .app { gap: 8px; padding-left: 12px; padding-right: 12px; }
+  .logo { width: 31px; height: 31px; }
+  .shutter { width: 56px; height: 56px; }
+  .tool { width: 40px; height: 40px; }
+  .current-look { padding: 8px 12px; }
+  .intensity { margin-top: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .filter-drawer, .drawer-backdrop { transition: none; }
 }
 </style>
 </head>
@@ -252,22 +362,15 @@ input[type=range] {
     </div>
   </section>
 
-  <section>
-    <div class="section-label">SELECT YOUR COLOR PROFILE</div>
-    <div class="look-list">
-      <button class="look active" data-look="chrome">CHROME<small>Cool / Contrast</small></button>
-      <button class="look" data-look="portra">PORTRA<small>Warm / Soft</small></button>
-      <button class="look" data-look="mono">MONO<small>Silver / B&W</small></button>
-      <button class="look" data-look="golden">GOLDEN<small>Amber / Warm</small></button>
-      <button class="look" data-look="ektar">EKTAR<small>Rich / Vivid</small></button>
-      <button class="look" data-look="fuji">FUJI<small>Olive / Green</small></button>
-      <button class="look" data-look="teal">CINE TEAL<small>Cool / Cinematic</small></button>
-      <button class="look" data-look="faded">FADED<small>Matte / Muted</small></button>
-      <button class="look" data-look="noir">NOIR<small>Deep / B&W</small></button>
-      <button class="look" data-look="arctic">ARCTIC<small>Blue / Cool</small></button>
-      <button class="look" data-look="vintage">VINTAGE<small>Sepia / Soft</small></button>
-      <button class="look" data-look="pastel">PASTEL<small>Airy / Soft</small></button>
-    </div>
+  <section class="filter-bar">
+    <button class="current-look" id="openFilters"
+            aria-expanded="false" aria-controls="filterDrawer">
+      <span class="look-meta">
+        <small>CURRENT COLOR PROFILE</small>
+        <strong id="currentLook">CHROME 01</strong>
+      </span>
+      <span class="chevron">⌃</span>
+    </button>
 
     <div class="intensity">
       <div class="row">
@@ -281,16 +384,49 @@ input[type=range] {
   <div id="notice" role="status" aria-live="polite"></div>
 
   <div class="footer">
-    <button class="tool" id="flip" aria-label="Switch camera" title="Switch camera" disabled>↻</button>
+    <button class="tool" id="flip" aria-label="Switch camera"
+            title="Switch camera" disabled>↻</button>
     <div style="flex:1;text-align:center">
       <button class="shutter" id="capture" aria-label="Take photo" disabled>
         <span></span>
       </button>
-      <div class="footer-note" style="margin-top:8px">SAVE FRAME</div>
+      <div class="footer-note">SAVE FRAME</div>
     </div>
-    <button class="tool" id="reset" aria-label="Reset settings" title="Reset settings">↺</button>
+    <button class="tool" id="reset" aria-label="Reset settings"
+            title="Reset settings">↺</button>
   </div>
 </main>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+<section class="filter-drawer" id="filterDrawer"
+         role="dialog" aria-modal="true"
+         aria-hidden="true" aria-labelledby="drawerTitle">
+  <div class="drawer-handle"></div>
+  <header class="drawer-header">
+    <div>
+      <h2 id="drawerTitle">Choose your look</h2>
+      <p>12 FILM-INSPIRED COLOR PROFILES</p>
+    </div>
+    <button id="closeFilters" class="close-drawer"
+            aria-label="Close filters">✕</button>
+  </header>
+
+  <div class="drawer-grid">
+    <button class="look active" data-look="chrome" aria-pressed="true">CHROME<small>Cool / Contrast</small></button>
+    <button class="look" data-look="portra" aria-pressed="false">PORTRA<small>Warm / Soft</small></button>
+    <button class="look" data-look="mono" aria-pressed="false">MONO<small>Silver / B&W</small></button>
+    <button class="look" data-look="golden" aria-pressed="false">GOLDEN<small>Amber / Warm</small></button>
+    <button class="look" data-look="ektar" aria-pressed="false">EKTAR<small>Rich / Vivid</small></button>
+    <button class="look" data-look="fuji" aria-pressed="false">FUJI<small>Olive / Green</small></button>
+    <button class="look" data-look="teal" aria-pressed="false">CINE TEAL<small>Cool / Cinematic</small></button>
+    <button class="look" data-look="faded" aria-pressed="false">FADED<small>Matte / Muted</small></button>
+    <button class="look" data-look="noir" aria-pressed="false">NOIR<small>Deep / B&W</small></button>
+    <button class="look" data-look="arctic" aria-pressed="false">ARCTIC<small>Blue / Cool</small></button>
+    <button class="look" data-look="vintage" aria-pressed="false">VINTAGE<small>Sepia / Soft</small></button>
+    <button class="look" data-look="pastel" aria-pressed="false">PASTEL<small>Airy / Soft</small></button>
+  </div>
+</section>
 
 <script>
 (() => {
@@ -315,6 +451,11 @@ input[type=range] {
   const lookName = $("#lookName");
   const liveLabel = $("#liveLabel");
   const notice = $("#notice");
+  const drawer = $("#filterDrawer");
+  const backdrop = $("#drawerBackdrop");
+  const openFilters = $("#openFilters");
+  const closeFilters = $("#closeFilters");
+  const currentLook = $("#currentLook");
 
   let stream = null;
   let facing = "environment";
@@ -324,6 +465,7 @@ input[type=range] {
   let texture = null;
   let program = null;
   let ready = false;
+  let starting = false;
 
   const looks = {
     chrome:  { id: 0, name: "CHROME 01" },
@@ -362,51 +504,39 @@ input[type=range] {
       vec3 result = c;
 
       if (u_look < 0.5) {
-        // Chrome: cool shadows and restrained warm highlights.
         result = c * vec3(0.91, 1.01, 1.10);
         result += vec3(0.035, 0.012, -0.008) * l;
       } else if (u_look < 1.5) {
-        // Portra-inspired warm, soft rendering.
         result = (c * vec3(1.09, 1.015, 0.91) - 0.5) * 0.88 + 0.53;
       } else if (u_look < 2.5) {
-        // Mono.
         float g = (l - 0.5) * 1.13 + 0.5;
         result = vec3(g);
       } else if (u_look < 3.5) {
-        // Golden Hour.
         result = c * vec3(1.12, 1.02, 0.86);
         result += vec3(0.045, 0.018, -0.025) * l;
       } else if (u_look < 4.5) {
-        // Ektar-inspired vivid contrast.
         result = (c - 0.5) * 1.18 + 0.5;
         result = mix(vec3(l), result * vec3(1.04, 1.0, 0.96), 0.8);
       } else if (u_look < 5.5) {
-        // Fuji-inspired olive greens.
         result = c * vec3(0.96, 1.08, 0.91);
         result.g += 0.025 * (1.0 - l);
       } else if (u_look < 6.5) {
-        // Cinematic teal shadows and warm highlights.
         result = c + vec3(0.0, 0.025, 0.045) * (1.0 - l);
         result.r += 0.055 * l;
         result.b *= 0.94;
       } else if (u_look < 7.5) {
-        // Faded film with lifted blacks.
         result = (c - 0.5) * 0.78 + 0.55;
         result = mix(result, vec3(l) * 0.8 + 0.15, 0.15);
       } else if (u_look < 8.5) {
-        // Noir.
         float g = clamp((l - 0.5) * 1.45 + 0.5, 0.0, 1.0);
         result = vec3(g);
       } else if (u_look < 9.5) {
-        // Arctic blue.
         result = c * vec3(0.88, 1.04, 1.15);
         result += vec3(-0.015, 0.015, 0.035);
       } else if (u_look < 10.5) {
-        // Warm vintage.
         result = c * vec3(1.10, 1.02, 0.88);
         result = (result - 0.5) * 0.85 + 0.55;
       } else {
-        // Dreamy pastel.
         result = mix(c, vec3(l), 0.18);
         result = result * 0.88 + 0.08;
         result += vec3(0.045, 0.015, 0.035);
@@ -422,6 +552,29 @@ input[type=range] {
       gl_FragColor = vec4(grade(color), 1.0);
     }
   `;
+
+  function setDrawer(open) {
+    document.body.classList.toggle("drawer-open", open);
+    drawer.setAttribute("aria-hidden", String(!open));
+    openFilters.setAttribute("aria-expanded", String(open));
+
+    if (open) {
+      closeFilters.focus();
+    } else {
+      openFilters.focus();
+    }
+  }
+
+  openFilters.addEventListener("click", () => setDrawer(true));
+  closeFilters.addEventListener("click", () => setDrawer(false));
+  backdrop.addEventListener("click", () => setDrawer(false));
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" &&
+        document.body.classList.contains("drawer-open")) {
+      setDrawer(false);
+    }
+  });
 
   function compileShader(type, source) {
     const shader = gl.createShader(type);
@@ -442,6 +595,7 @@ input[type=range] {
     const vs = compileShader(gl.VERTEX_SHADER, vertexSource);
     const fs = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
     program = gl.createProgram();
+
     gl.attachShader(program, vs);
     gl.attachShader(program, fs);
     gl.linkProgram(program);
@@ -516,14 +670,17 @@ input[type=range] {
   }
 
   async function startCamera() {
+    if (starting) return;
+
     error.textContent = "";
     notice.textContent = "";
 
     if (!navigator.mediaDevices?.getUserMedia) {
-      error.textContent = "Camera requires HTTPS or localhost.";
+      error.textContent = "Camera access requires HTTPS or localhost.";
       return;
     }
 
+    starting = true;
     status.textContent = "CONNECTING";
     $("#start").disabled = true;
 
@@ -554,7 +711,6 @@ input[type=range] {
       flip.disabled = false;
       status.textContent = "CAMERA ON";
       liveLabel.textContent = "● LIVE";
-
       render();
     } catch (e) {
       if (stream) {
@@ -565,13 +721,14 @@ input[type=range] {
       status.textContent = "STANDBY";
       message.style.display = "flex";
       error.textContent = e.name === "NotAllowedError"
-        ? "Camera permission denied. Allow access in browser settings."
+        ? "Camera permission denied. Allow camera access in browser settings."
         : e.name === "NotFoundError"
           ? "No compatible camera was found."
           : "Unable to start camera. Check HTTPS and browser permissions.";
 
       console.error(e);
     } finally {
+      starting = false;
       $("#start").disabled = false;
     }
   }
@@ -581,13 +738,18 @@ input[type=range] {
   document.querySelectorAll("[data-look]").forEach(button => {
     button.addEventListener("click", () => {
       activeLook = button.dataset.look;
-      lookName.textContent = looks[activeLook].name;
+      const name = looks[activeLook].name;
+
+      lookName.textContent = name;
+      currentLook.textContent = name;
 
       document.querySelectorAll("[data-look]").forEach(item => {
         const selected = item === button;
         item.classList.toggle("active", selected);
         item.setAttribute("aria-pressed", String(selected));
       });
+
+      setDrawer(false);
     });
   });
 
@@ -598,7 +760,7 @@ input[type=range] {
   });
 
   flip.addEventListener("click", async () => {
-    if (!stream) return;
+    if (!stream || starting) return;
     facing = facing === "environment" ? "user" : "environment";
     await startCamera();
   });
@@ -610,6 +772,7 @@ input[type=range] {
     strengthValue.value = "75%";
     strengthValue.textContent = "75%";
     lookName.textContent = looks.chrome.name;
+    currentLook.textContent = looks.chrome.name;
 
     document.querySelectorAll("[data-look]").forEach(button => {
       const selected = button.dataset.look === "chrome";
